@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Paper — RawMoon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-orange: #d29922;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+
+    .btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn:hover { background: var(--bg-tertiary); }
+
+    .main {
+      flex: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 48px 24px;
+      width: 100%;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* NOT LOGGED IN STATE */
+    .auth-required {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 32px;
+      text-align: center;
+      display: none;
+    }
+
+    .auth-required .icon { font-size: 3rem; margin-bottom: 16px; }
+    .auth-required h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+    .auth-required p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0d1117;
+      border-color: var(--accent);
+      font-weight: 600;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+    }
+    .btn-primary:hover { background: #79c0ff; }
+
+    /* FORM */
+    .upload-form {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+    }
+
+    .form-section {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .form-section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-grid.single { grid-template-columns: 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .required { color: #f85149; margin-left: 2px; }
+
+    .form-input, .form-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    .form-input:focus, .form-select:focus { border-color: var(--accent); }
+    .form-input::placeholder { color: var(--text-secondary); }
+
+    /* FILE UPLOAD */
+    .file-drop {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 40px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .file-drop:hover, .file-drop.dragover {
+      border-color: var(--accent);
+      background: rgba(88,166,255,0.04);
+    }
+
+    .file-drop input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .file-drop-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    .file-drop-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .file-drop-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .file-selected {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(63,185,80,0.08);
+      border: 1px solid rgba(63,185,80,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 12px;
+    }
+
+    .file-selected.show { display: flex; }
+
+    .file-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--accent-green);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-size {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* PROGRESS */
+    .progress-wrap {
+      display: none;
+      margin-top: 16px;
+    }
+
+    .progress-wrap.show { display: block; }
+
+    .progress-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* MESSAGE */
+    .message {
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      background: rgba(63,185,80,0.1);
+      border: 1px solid rgba(63,185,80,0.3);
+      color: var(--accent-green);
+    }
+
+    .message.error {
+      background: rgba(248,81,73,0.1);
+      border: 1px solid rgba(248,81,73,0.3);
+      color: #f85149;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--accent-green);
+      color: #0d1117;
+      border: none;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-submit:hover { background: #56d364; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .guidelines {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .guidelines h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .guidelines ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .guidelines li {
+      font-size: 0.825rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .guidelines li::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="btn">← Home</a>
+      <a href="login.html" class="btn btn-primary" id="authBtn" style="display:none;">Sign In</a>
+      <button class="btn" id="signoutBtn" style="display:none;" onclick="signOut()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <div class="page-header">
+      <h1>⬆️ Upload a Question Paper</h1>
+      <p>Help fellow students by uploading old question papers. All uploads are reviewed before going live.</p>
+    </div>
+
+    <!-- NOT LOGGED IN -->
+    <div class="auth-required" id="authRequired">
+      <div class="icon">🔐</div>
+      <h2>Sign in to Upload</h2>
+      <p>You need an account to upload papers. It's free and takes less than a minute!</p>
+      <a href="login.html" class="btn btn-primary">Sign In or Create Account</a>
+    </div>
+
+    <!-- UPLOAD FORM -->
+    <div id="uploadSection" style="display:none;">
+
+      <div class="message" id="message"></div>
+
+      <div class="upload-form">
+
+        <!-- UPLOADER INFO -->
+        <div class="form-section">
+          <div class="form-section-title">// Your Information</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required">*</span></label>
+              <input type="text" class="form-input" id="uploaderName" placeholder="Your full name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email <span class="required">*</span></label>
+              <input type="email" class="form-input" id="uploaderEmail" placeholder="your@email.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mobile Number</label>
+              <input type="tel" class="form-input" id="uploaderMobile" placeholder="98XXXXXXXX"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAPER INFO -->
+        <div class="form-section">
+          <div class="form-section-title">// Paper Details</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">University <span class="required">*</span></label>
+              <select class="form-select" id="paperUniversity">
+                <option value="">Select University</option>
+                <option value="TU">Tribhuvan University (TU)</option>
+                <option value="PU">Pokhara University (PU)</option>
+                <option value="KU">Kathmandu University (KU)</option>
+                <option value="POU">Purbanchal University (POU)</option>
+                <option value="FU">Far-Western University (FU)</option>
+                <option value="MU">Mid-Western University (MU)</option>
+                <option value="AFU">Agriculture & Forestry University (AFU)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Faculty <span class="required">*</span></label>
+              <select class="form-select" id="paperFaculty">
+                <option value="">Select Faculty</option>
+                <option value="BCA">BCA</option>
+                <option value="BBA">BBA</option>
+                <option value="BE">BE (Engineering)</option>
+                <option value="BSc">BSc</option>
+                <option value="BBS">BBS</option>
+                <option value="BA">BA</option>
+                <option value="BEd">BEd</option>
+                <option value="MBBS">MBBS</option>
+                <option value="MBA">MBA</option>
+                <option value="MCA">MCA</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject Name <span class="required">*</span></label>
+              <input type="text" class="form-input" id="paperSubject" placeholder="e.g. Data Structures"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year <span class="required">*</span></label>
+              <select class="form-select" id="paperYear">
+                <option value="">Select Year</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Semester <span class="required">*</span></label>
+              <select class="form-select" id="paperSemester">
+                <option value="">Select Semester</option>
+                <option value="Fall">Fall</option>
+                <option value="Spring">Spring</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILE UPLOAD -->
+        <div class="form-section">
+          <div class="form-section-title">// Upload File</div>
+          <div class="file-drop" id="fileDrop">
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(this)"/>
+            <div class="file-drop-icon">📄</div>
+            <div class="file-drop-text">Click to upload or drag & drop</div>
+            <div class="file-drop-hint">PDF, JPG, PNG — Max 10MB</div>
+          </div>
+          <div class="file-selected" id="fileSelected">
+            <span>📎</span>
+            <span class="file-name" id="fileName"></span>
+            <span class="file-size" id="fileSize"></span>
+          </div>
+          <div class="progress-wrap" id="progressWrap">
+            <div class="progress-label" id="progressLabel">Uploading... 0%</div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="form-section">
+          <button class="btn-submit" id="submitBtn" onclick="uploadPaper()">
+            ⬆️ Submit Paper for Review
+          </button>
+
+          <div class="guidelines">
+            <h4>// Guidelines</h4>
+            <ul>
+              <li>Only upload real university question papers</li>
+              <li>Make sure the university, faculty and subject are correct</li>
+              <li>File must be clear and readable</li>
+              <li>Maximum file size is 10MB</li>
+              <li>Papers are reviewed by admin before going live</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>🌙 RawMoon — <a href="index.html">Back to Home</a></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    let currentUser = null;
+    let selectedFile = null;
+
+    // Check auth on load
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        currentUser = user;
+        document.getElementById('uploadSection').style.display = 'block';
+        document.getElementById('authRequired').style.display = 'none';
+        document.getElementById('signoutBtn').style.display = 'inline-flex';
+        document.getElementById('authBtn').style.display = 'none';
+        // Pre-fill email
+        document.getElementById('uploaderEmail').value = user.email || '';
+        document.getElementById('uploaderName').value = user.user_metadata?.full_name || '';
+      } else {
+        document.getElementById('uploadSection').style.display = 'none';
+        document.getElementById('authRequired').style.display = 'block';
+        document.getElementById('authBtn').style.display = 'inline-flex';
+      }
+    }
+
+    async function signOut() {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    // Handle file selection
+    function handleFileSelect(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      // Check size (10MB max)
+      if (file.size > 10 * 1024 * 1024) {
+        showMessage('File is too large. Maximum size is 10MB.', 'error');
+        input.value = '';
+        return;
+      }
+
+      selectedFile = file;
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('fileSize').textContent = formatFileSize(file.size);
+      document.getElementById('fileSelected').classList.add('show');
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    // Drag and drop
+    const fileDrop = document.getElementById('fileDrop');
+    fileDrop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileDrop.classList.add('dragover');
+    });
+    fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
+    fileDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileDrop.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        document.getElementById('fileInput').files = e.dataTransfer.files;
+        handleFileSelect(document.getElementById('fileInput'));
+      }
+    });
+
+    function showMessage(text, type) {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+      msg.style.display = 'block';
+      msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Upload paper
+    async function uploadPaper() {
+      const name = document.getElementById('uploaderName').value.trim();
+      const email = document.getElementById('uploaderEmail').value.trim();
+      const mobile = document.getElementById('uploaderMobile').value.trim();
+      const university = document.getElementById('paperUniversity').value;
+      const faculty = document.getElementById('paperFaculty').value;
+      const subject = document.getElementById('paperSubject').value.trim();
+      const year = document.getElementById('paperYear').value;
+      const semester = document.getElementById('paperSemester').value;
+
+      // Validate
+      if (!name || !email || !university || !faculty || !subject || !year || !semester) {
+        showMessage('Please fill in all required fields.', 'error');
+        return;
+      }
+
+      if (!selectedFile) {
+        showMessage('Please select a file to upload.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Uploading...';
+
+      // Show progress
+      document.getElementById('progressWrap').classList.add('show');
+
+      try {
+        // Upload file to Supabase Storage
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `papers/${fileName}`;
+
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress = Math.min(progress + 10, 90);
+          document.getElementById('progressFill').style.width = progress + '%';
+          document.getElementById('progressLabel').textContent = `Uploading... ${progress}%`;
+        }, 200);
+
+        const { data: fileData, error: fileError } = await supabase.storage
+          .from('papers')
+          .upload(filePath, selectedFile);
+
+        clearInterval(progressInterval);
+
+        if (fileError) throw fileError;
+
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressLabel').textContent = 'Upload complete!';
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('papers')
+          .getPublicUrl(filePath);
+
+        // Save to database
+        const { error: dbError } = await supabase.from('papers').insert({
+          title: `${subject} — ${university} ${faculty} Year ${year} ${semester}`,
+          university,
+          faculty,
+          subject,
+          year,
+          semester,
+          file_url: publicUrl,
+          uploaded_by: currentUser.id,
+          uploader_name: name,
+          uploader_email: email,
+          uploader_mobile: mobile,
+          status: 'pending'
+        });
+
+        if (dbError) throw dbError;
+
+        showMessage('✅ Paper submitted successfully! It will go live after admin review. Thank you for contributing! 🙏', 'success');
+        btn.textContent = '✅ Submitted!';
+
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          document.getElementById('uploaderMobile').value = '';
+          document.getElementById('paperUniversity').value = '';
+          document.getElementById('paperFaculty').value = '';
+          document.getElementById('paperSubject').value = '';
+          document.getElementById('paperYear').value = '';
+          document.getElementById('paperSemester').value = '';
+          document.getElementById('fileInput').value = '';
+          document.getElementById('fileSelected').classList.remove('show');
+          document.getElementById('progressWrap').classList.remove('show');
+          selectedFile = null;
+          btn.disabled = false;
+          btn.textContent = '⬆️ Submit Paper for Review';
+        }, 3000);
+
+      } catch (err) {
+        showMessage('Something went wrong: ' + err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '⬆️ Submit Paper for Review';
+        document.getElementById('progressWrap').classList.remove('show');
+      }
+    }
+
+    checkAuth();
+  </script>
+
+</body>
+</html>
