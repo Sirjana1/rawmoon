@@ -1,9 +1,4 @@
-// Supabase Configuration
 const SUPABASE_URL = 'https://nynfmzlvgqcxuxwgniht.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bmZtemx2Z3FjeHV4d2duaWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjA4NjEsImV4cCI6MjA5MjkzNjg2MX0.uJXFSWBuhvNJV4Buoev05ZQ9kgNws_074Y3I-6GDqb0'; // Replace with your actual anon key
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bmZtemx2Z3FjeHV4d2duaWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjA4NjEsImV4cCI6MjA5MjkzNjg2MX0.uJXFSWBuhvNJV4Buoev05ZQ9kgNws_074Y3I-6GDqb0';
 
-const { createClient } = supabase;
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Export as global
-window.supabase = supabaseClient;
+window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
