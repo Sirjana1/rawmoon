@@ -1,10 +1,601 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>RawMoon</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RawMoon — Nepal University Papers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-orange: #d29922;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+
+    .btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-primary);
+    }
+    .btn-ghost:hover { background: var(--bg-tertiary); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0d1117;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #79c0ff; border-color: #79c0ff; }
+
+    .btn-green {
+      background: var(--accent-green);
+      color: #0d1117;
+      border-color: var(--accent-green);
+      font-weight: 600;
+    }
+    .btn-green:hover { background: #56d364; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      border-bottom: 1px solid var(--border);
+      background: radial-gradient(ellipse at 50% 0%, rgba(88,166,255,0.08) 0%, transparent 70%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .highlight { color: var(--accent); }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 48px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .stat-divider {
+      width: 1px;
+      background: var(--border);
+      height: 40px;
+      align-self: center;
+    }
+
+    /* SEARCH SECTION */
+    .search-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .search-section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .search-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: border-color 0.15s;
+    }
+
+    .search-box:focus-within { border-color: var(--accent); }
+
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .search-icon { color: var(--text-secondary); font-size: 1rem; }
+
+    .search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .search-input::placeholder { color: var(--text-secondary); }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+
+    .filter-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .filter-select:focus { border-color: var(--accent); }
+
+    .search-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-search {
+      background: var(--accent);
+      color: #0d1117;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-search:hover { background: #79c0ff; }
+
+    .btn-clear {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-clear:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+
+    /* RESULTS */
+    .results-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .results-count {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .paper-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: border-color 0.15s, background 0.15s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .paper-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-tertiary);
+    }
+
+    .paper-info { flex: 1; min-width: 0; }
+
+    .paper-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .paper-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tag.university { border-color: rgba(88,166,255,0.3); color: var(--accent); }
+    .tag.year { border-color: rgba(63,185,80,0.3); color: var(--accent-green); }
+    .tag.semester { border-color: rgba(210,153,34,0.3); color: var(--accent-orange); }
+
+    .paper-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+    .btn-download {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-download:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      display: none;
+    }
+
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+
+    .empty-state h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .navbar { padding: 12px 16px; }
+      .nav-links .btn-ghost { display: none; }
+      .paper-card { flex-direction: column; align-items: flex-start; }
+      .stat-divider { display: none; }
+    }
+  </style>
 </head>
-<body style="background-color: black;">
-    <h1 style="color:whitesmoke">Welcome to RawMoon 🌙</h1>
-    <p style = "color: whitesmoke">This is my first live website!</p>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
+    <div class="nav-links">
+      <a href="papers.html" class="btn btn-ghost">📄 Papers</a>
+      <a href="upload.html" class="btn btn-ghost">⬆️ Upload</a>
+      <a href="login.html" class="btn btn-primary" id="authBtn">Sign In</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Nepal University Question Papers
+    </div>
+    <h1>Find Old Question Papers<br>from <span class="highlight">Nepal Universities</span></h1>
+    <p>Search thousands of past papers from TU, PU, KU, POU, FU and more. Free to access, forever.</p>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="papers.html" class="btn btn-primary" style="padding:10px 24px; font-size:1rem;">Browse All Papers</a>
+      <a href="upload.html" class="btn btn-green" style="padding:10px 24px; font-size:1rem;">Upload a Paper</a>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-number" id="totalPapers">0</div>
+        <div class="stat-label">Papers Available</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-number">7+</div>
+        <div class="stat-label">Universities</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-number">Free</div>
+        <div class="stat-label">Always</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <div class="search-section">
+    <h2>// Search Papers</h2>
+    <div class="search-box">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search by subject name..."/>
+      </div>
+      <div class="filters">
+        <select class="filter-select" id="filterUniversity">
+          <option value="">All Universities</option>
+          <option value="TU">Tribhuvan University (TU)</option>
+          <option value="PU">Pokhara University (PU)</option>
+          <option value="KU">Kathmandu University (KU)</option>
+          <option value="POU">Purbanchal University (POU)</option>
+          <option value="FU">Far-Western University (FU)</option>
+          <option value="MU">Mid-Western University (MU)</option>
+          <option value="APU">Agriculture & Forestry University (AFU)</option>
+        </select>
+        <select class="filter-select" id="filterFaculty">
+          <option value="">All Faculties</option>
+          <option value="BCA">BCA</option>
+          <option value="BBA">BBA</option>
+          <option value="BE">BE (Engineering)</option>
+          <option value="BSc">BSc</option>
+          <option value="BBS">BBS</option>
+          <option value="BA">BA</option>
+          <option value="BEd">BEd</option>
+          <option value="MBBS">MBBS</option>
+          <option value="MBA">MBA</option>
+          <option value="MCA">MCA</option>
+        </select>
+        <select class="filter-select" id="filterYear">
+          <option value="">All Years</option>
+          <option value="1">1st Year</option>
+          <option value="2">2nd Year</option>
+          <option value="3">3rd Year</option>
+          <option value="4">4th Year</option>
+        </select>
+        <select class="filter-select" id="filterSemester">
+          <option value="">All Semesters</option>
+          <option value="Fall">Fall</option>
+          <option value="Spring">Spring</option>
+        </select>
+      </div>
+      <div class="search-actions">
+        <button class="btn-search" onclick="searchPapers()">Search Papers</button>
+        <button class="btn-clear" onclick="clearSearch()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section">
+    <div class="results-header">
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+
+    <div class="loading" id="loading">⏳ Loading papers...</div>
+
+    <div id="papersList"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📭</div>
+      <h3>No papers found</h3>
+      <p>We couldn't find papers matching your search. Help others by uploading this paper!</p>
+      <a href="upload.html" class="btn btn-primary">Upload This Paper</a>
+      <br><br>
+      <button onclick="requestPaper()" class="btn btn-ghost">Or Request This Paper</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>🌙 RawMoon — Made for students of Nepal &nbsp;|&nbsp; <a href="upload.html">Contribute a Paper</a> &nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
+  </footer>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+
+  <script>
+    // Load total paper count on homepage
+    async function loadStats() {
+      try {
+        const { count } = await supabase
+          .from('papers')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'approved');
+        document.getElementById('totalPapers').textContent = count || 0;
+      } catch (e) {}
+    }
+
+    // Request paper function
+    async function requestPaper() {
+      const university = document.getElementById('filterUniversity').value;
+      const faculty = document.getElementById('filterFaculty').value;
+      const subject = document.getElementById('searchInput').value;
+      const year = document.getElementById('filterYear').value;
+      const semester = document.getElementById('filterSemester').value;
+
+      if (!university && !subject) {
+        alert('Please enter at least a university or subject name to request a paper.');
+        return;
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert('Please sign in to request a paper.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const { error } = await supabase.from('paper_requests').insert({
+        university, faculty, subject, year, semester,
+        requested_by: user.id
+      });
+
+      if (!error) alert('✅ Paper requested! We will try to add it soon.');
+      else alert('Something went wrong. Please try again.');
+    }
+
+    loadStats();
+  </script>
+
 </body>
 </html>
