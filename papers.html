@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Papers — RawMoon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --border: #30363d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --accent: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-orange: #d29922;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+
+    .btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn:hover { background: var(--bg-tertiary); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0d1117;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #79c0ff; }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      width: 100%;
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* FILTERS */
+    .filter-bar {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 14px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-secondary); }
+
+    .filter-select {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .filter-select:focus { border-color: var(--accent); }
+
+    .btn-search {
+      background: var(--accent);
+      color: #0d1117;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+    }
+    .btn-search:hover { background: #79c0ff; }
+
+    .btn-clear {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+    }
+    .btn-clear:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+
+    /* RESULTS INFO */
+    .results-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .results-count {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* PAPER CARD */
+    .paper-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .paper-card:hover { border-color: var(--accent); background: var(--bg-tertiary); }
+
+    .paper-info { flex: 1; min-width: 0; }
+
+    .paper-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .paper-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tag.university { border-color: rgba(88,166,255,0.3); color: var(--accent); }
+    .tag.year { border-color: rgba(63,185,80,0.3); color: var(--accent-green); }
+    .tag.semester { border-color: rgba(210,153,34,0.3); color: var(--accent-orange); }
+
+    .paper-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    .btn-download {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 16px;
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .btn-download:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      display: none;
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .empty-state p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; }
+
+    /* LOAD MORE */
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .btn-load-more {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 28px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
+      font-weight: 500;
+    }
+    .btn-load-more:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-load-more:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .paper-card { flex-direction: column; align-items: flex-start; }
+      .paper-actions { width: 100%; }
+      .btn-download { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
+    <div class="nav-links">
+      <a href="upload.html" class="btn">⬆️ Upload</a>
+      <a href="login.html" class="btn btn-primary" id="authBtn">Sign In</a>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <div class="page-header">
+      <h1>📄 Browse All Papers</h1>
+      <p>Search and download old question papers from Nepal universities</p>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by subject..."/>
+      <select class="filter-select" id="filterUniversity">
+        <option value="">All Universities</option>
+        <option value="TU">TU</option>
+        <option value="PU">PU</option>
+        <option value="KU">KU</option>
+        <option value="POU">POU</option>
+        <option value="FU">FU</option>
+        <option value="MU">MU</option>
+        <option value="AFU">AFU</option>
+      </select>
+      <select class="filter-select" id="filterFaculty">
+        <option value="">All Faculties</option>
+        <option value="BCA">BCA</option>
+        <option value="BBA">BBA</option>
+        <option value="BE">BE</option>
+        <option value="BSc">BSc</option>
+        <option value="BBS">BBS</option>
+        <option value="BA">BA</option>
+        <option value="BEd">BEd</option>
+        <option value="MBBS">MBBS</option>
+        <option value="MBA">MBA</option>
+        <option value="MCA">MCA</option>
+      </select>
+      <select class="filter-select" id="filterYear">
+        <option value="">All Years</option>
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+        <option value="3">3rd Year</option>
+        <option value="4">4th Year</option>
+      </select>
+      <select class="filter-select" id="filterSemester">
+        <option value="">All Semesters</option>
+        <option value="Fall">Fall</option>
+        <option value="Spring">Spring</option>
+      </select>
+      <button class="btn-search" onclick="searchPapers()">Search</button>
+      <button class="btn-clear" onclick="clearSearch()">Clear</button>
+    </div>
+
+    <!-- RESULTS INFO -->
+    <div class="results-info">
+      <span class="results-count" id="resultsCount"></span>
+      <a href="upload.html" class="btn btn-primary" style="font-size:0.8rem; padding:6px 14px;">⬆️ Upload a Paper</a>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">⏳ Loading papers...</div>
+
+    <!-- PAPERS LIST -->
+    <div id="papersList"></div>
+
+    <!-- EMPTY STATE -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📭</div>
+      <h3>No papers found</h3>
+      <p>We couldn't find papers matching your search. Help others by uploading this paper!</p>
+      <a href="upload.html" class="btn btn-primary">Upload This Paper</a>
+      <br><br>
+      <button onclick="requestPaper()" class="btn" style="margin-top:8px;">Or Request This Paper</button>
+    </div>
+
+    <!-- LOAD MORE -->
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+      <button class="btn-load-more" id="loadMoreBtn" onclick="loadMore()">Load More Papers</button>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>🌙 RawMoon — Made for students of Nepal &nbsp;|&nbsp; <a href="upload.html">Contribute a Paper</a></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.supabase = supabase.createClient(
+      'https://nynfmzlvgqcxuxwgniht.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bmZtemx2Z3FjeHV4d2duaWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjA4NjEsImV4cCI6MjA5MjkzNjg2MX0.uJXFSWBuhvNJV4Buoev05ZQ9kgNws_074Y3I-6GDqb0'
+    );
+  </script>
+  <script>
+
+    const PAGE_SIZE = 20;
+    let currentPage = 0;
+    let currentFilters = {};
+    let totalCount = 0;
+
+    async function searchPapers(reset = true) {
+      if (reset) {
+        currentPage = 0;
+        document.getElementById('papersList').innerHTML = '';
+      }
+
+      const subject = document.getElementById('searchInput').value.trim();
+      const university = document.getElementById('filterUniversity').value;
+      const faculty = document.getElementById('filterFaculty').value;
+      const year = document.getElementById('filterYear').value;
+      const semester = document.getElementById('filterSemester').value;
+
+      currentFilters = { subject, university, faculty, year, semester };
+
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('emptyState');
+      const loadMoreWrap = document.getElementById('loadMoreWrap');
+
+      loading.style.display = 'block';
+      emptyState.style.display = 'none';
+      loadMoreWrap.style.display = 'none';
+
+      let query = supabase
+        .from('papers')
+        .select('*', { count: 'exact' })
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false })
+        .range(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE - 1);
+
+      if (subject) query = query.ilike('subject', `%${subject}%`);
+      if (university) query = query.eq('university', university);
+      if (faculty) query = query.eq('faculty', faculty);
+      if (year) query = query.eq('year', year);
+      if (semester) query = query.eq('semester', semester);
+
+      const { data, error, count } = await query;
+
+      loading.style.display = 'none';
+      totalCount = count || 0;
+
+      if (error || !data || data.length === 0) {
+        if (currentPage === 0) emptyState.style.display = 'block';
+        document.getElementById('resultsCount').textContent = '0 papers found';
+        return;
+      }
+
+      document.getElementById('resultsCount').textContent =
+        `Showing ${Math.min((currentPage + 1) * PAGE_SIZE, totalCount)} of ${totalCount} paper${totalCount !== 1 ? 's' : ''}`;
+
+      renderPapers(data);
+
+      // Show load more if there are more papers
+      if ((currentPage + 1) * PAGE_SIZE < totalCount) {
+        loadMoreWrap.style.display = 'block';
+      }
+    }
+
+    function renderPapers(papers) {
+      const list = document.getElementById('papersList');
+      papers.forEach(paper => {
+        const card = document.createElement('div');
+        card.className = 'paper-card';
+        const date = new Date(paper.created_at).toLocaleDateString('en-NP');
+        card.innerHTML = `
+          <div class="paper-info">
+            <div class="paper-title">${paper.subject} — ${paper.faculty}</div>
+            <div class="paper-meta">
+              <span class="tag university">${paper.university}</span>
+              <span class="tag year">Year ${paper.year}</span>
+              <span class="tag semester">${paper.semester}</span>
+              <span class="tag">📅 ${date}</span>
+            </div>
+          </div>
+          <div class="paper-actions">
+            <a href="${paper.file_url}" target="_blank" class="btn-download">⬇️ Download</a>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function loadMore() {
+      currentPage++;
+      const btn = document.getElementById('loadMoreBtn');
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+
+      // Restore filters
+      document.getElementById('searchInput').value = currentFilters.subject || '';
+      document.getElementById('filterUniversity').value = currentFilters.university || '';
+      document.getElementById('filterFaculty').value = currentFilters.faculty || '';
+      document.getElementById('filterYear').value = currentFilters.year || '';
+      document.getElementById('filterSemester').value = currentFilters.semester || '';
+
+      searchPapers(false).then(() => {
+        btn.disabled = false;
+        btn.textContent = 'Load More Papers';
+      });
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterUniversity').value = '';
+      document.getElementById('filterFaculty').value = '';
+      document.getElementById('filterYear').value = '';
+      document.getElementById('filterSemester').value = '';
+      searchPapers();
+    }
+
+    async function requestPaper() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert('Please sign in to request a paper.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const university = document.getElementById('filterUniversity').value;
+      const faculty = document.getElementById('filterFaculty').value;
+      const subject = document.getElementById('searchInput').value;
+      const year = document.getElementById('filterYear').value;
+      const semester = document.getElementById('filterSemester').value;
+
+      if (!university && !subject) {
+        alert('Please enter at least a university or subject to request.');
+        return;
+      }
+
+      const { error } = await supabase.from('paper_requests').insert({
+        university, faculty, subject, year, semester,
+        requested_by: user.id
+      });
+
+      if (!error) alert('✅ Paper requested! We will try to add it soon. Thank you!');
+      else alert('Something went wrong. Please try again.');
+    }
+
+    // Update auth button
+    async function updateAuthButton() {
+      const { data: { user } } = await supabase.auth.getUser();
+      const btn = document.getElementById('authBtn');
+      if (user) {
+        btn.textContent = '⬆️ My Uploads';
+        btn.href = 'upload.html';
+      }
+    }
+
+    // Search on Enter key
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchPapers();
+    });
+
+    // Load all papers on page load
+    searchPapers();
+    updateAuthButton();
+  </script>
+
+</body>
+</html>
