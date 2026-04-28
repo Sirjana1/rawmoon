@@ -323,7 +323,14 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
+<script>
+  window.supabase = supabase.createClient(
+    'https://nynfmzlvgqcxuxwgniht.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bmZtemx2Z3FjeHV4d2duaWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjA4NjEsImV4cCI6MjA5MjkzNjg2MX0.uJXFSWBuhvNJV4Buoev05ZQ9kgNws_074Y3I-6GDqb0'
+  );
+</script>
+<script src="js/auth.js"></script>
+<script src="js/search.js"></script>
   <script>
     // Switch between sign in and sign up tabs
     function switchTab(tab) {
