@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sign In — RawMoon</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="images/png" href="images/logo1.png"/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -14,7 +15,7 @@
       --border: #30363d;
       --text-primary: #e6edf3;
       --text-secondary: #8b949e;
-      --accent: #58a6ff;
+      --accent: white;
       --accent-green: #3fb950;
     }
 
@@ -36,8 +37,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-
     .logo {
       font-family: 'JetBrains Mono', monospace;
       font-size: 1.2rem;
@@ -161,7 +164,7 @@
       margin-top: 8px;
     }
 
-    .btn-submit:hover { background: #79c0ff; }
+    .btn-submit:hover { background:#3fb950; }
     .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .divider {
@@ -225,7 +228,7 @@
 
     footer {
       border-top: 1px solid var(--border);
-      padding: 20px;
+      padding: 24px;
       text-align: center;
       color: var(--text-secondary);
       font-size: 0.8rem;
@@ -233,25 +236,32 @@
     }
 
     footer a { color: var(--accent); text-decoration: none; }
+
+  
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
-    <a href="index.html" style="color: var(--text-secondary); font-size: 0.875rem; text-decoration: none;">← Back to Home</a>
+ <a href="index.html" class="logo" style="display:flex; align-items:center; gap:8px;">
+  <img src="images/logo1.png" alt="RawMoon" style="height:28px; width:auto;"/>
+  <span style="color:#ffffff; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Raw</span><span style="color:#8b949e; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Moon</span>
+</a>
+  <a href="index.html" style="color:var(--text-secondary); font-size:0.875rem; text-decoration:none;">← Back to Home</a>
+
   </nav>
 
   <div class="main">
     <div class="card">
 
-      <div class="card-header">
-        <div class="icon">🌙</div>
-        <h1>Welcome to RawMoon</h1>
-        <p>Sign in to upload papers and contribute</p>
-      </div>
-
+     <div class="card-header">
+  <div class="icon" style="display:flex; justify-content:center; align-items:center;">
+    <img src="images/logo1.png" alt="RawMoon" style="height:50px; width:auto;"/>
+  </div>
+  <h1>Welcome to RawMoon</h1>
+  <p>Sign in to upload papers and contribute</p>
+</div>
       <!-- TABS -->
       <div class="tabs">
         <button class="tab active" id="signinTab" onclick="switchTab('signin')">Sign In</button>
@@ -318,8 +328,9 @@
     </div>
   </div>
 
-  <footer>
-    <p>🌙 RawMoon — <a href="index.html">Back to Home</a></p>
+   <footer>
+<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
+ 
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

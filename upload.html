@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Paper — RawMoon</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="images/png" href="images/logo1.png"/>
+
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -14,7 +16,7 @@
       --border: #30363d;
       --text-primary: #e6edf3;
       --text-secondary: #8b949e;
-      --accent: #58a6ff;
+      --accent: #ffffff;
       --accent-green: #3fb950;
       --accent-orange: #d29922;
     }
@@ -117,7 +119,7 @@
       padding: 10px 24px;
       font-size: 0.95rem;
     }
-    .btn-primary:hover { background: #79c0ff; }
+    .btn-primary:hover { background: #3fb950; }
 
     /* FORM */
     .upload-form {
@@ -373,7 +375,11 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
+     <a href="index.html" class="logo" style="display:flex; align-items:center; gap:8px;">
+  <img src="images/logo1.png" alt="RawMoon" style="height:28px; width:auto;"/>
+  <span style="color:#ffffff; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Raw</span><span style="color:#8b949e; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Moon</span>
+</a>
+  <a href="index.html" style="color:var(--text-secondary); font-size:0.875rem; text-decoration:none;">← Back to Home</a>
     <div class="nav-links">
       <a href="index.html" class="btn">← Home</a>
       <a href="login.html" class="btn btn-primary" id="authBtn" style="display:none;">Sign In</a>
@@ -525,7 +531,7 @@
   </div>
 
   <footer>
-    <p>🌙 RawMoon — <a href="index.html">Back to Home</a></p>
+<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
   </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

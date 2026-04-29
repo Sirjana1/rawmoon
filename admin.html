@@ -14,7 +14,7 @@
       --border: #30363d;
       --text-primary: #e6edf3;
       --text-secondary: #8b949e;
-      --accent: #58a6ff;
+      --accent: #ffffff;
       --accent-green: #3fb950;
       --accent-orange: #d29922;
       --accent-red: #f85149;
@@ -134,7 +134,7 @@
       padding: 10px;
       justify-content: center;
     }
-    .btn-primary:hover { background: #79c0ff; }
+    .btn-primary:hover { background: #3fb950; }
 
     /* MAIN ADMIN */
     .admin-main {
@@ -409,7 +409,10 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
+    <a href="index.html" class="logo" style="display:flex; align-items:center; gap:8px;">
+  <img src="images/logo1.png" alt="RawMoon" style="height:28px; width:auto;"/>
+  <span style="color:#ffffff; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Raw</span><span style="color:#8b949e; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Moon</span>
+</a>
     <div class="nav-right">
       <span class="admin-badge">⚡ Admin Panel</span>
       <a href="index.html" class="btn">← Home</a>
@@ -481,7 +484,7 @@
   </div>
 
   <footer>
-    <p>🌙 RawMoon Admin — <a href="index.html">Back to Site</a></p>
+<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RawMoon — Nepal University Papers</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="images/png" href="images/logo1.png"/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -14,8 +15,8 @@
       --border: #30363d;
       --text-primary: #e6edf3;
       --text-secondary: #8b949e;
-      --accent: #58a6ff;
-      --accent-green: #3fb950;
+      --accent: #ffffff;
+      --accent-green: #ffffff;
       --accent-orange: #d29922;
     }
 
@@ -52,7 +53,7 @@
       gap: 8px;
     }
 
-    .logo span { color: var(--accent); }
+    .logo span { color: #8b949e; ; }
 
     .nav-links { display: flex; align-items: center; gap: 8px; }
 
@@ -82,7 +83,7 @@
       border-color: var(--accent);
       font-weight: 600;
     }
-    .btn-primary:hover { background: #79c0ff; border-color: #79c0ff; }
+    .btn-primary:hover { background: #56d364; border-color: #56d364; }
 
     .btn-green {
       background: var(--accent-green);
@@ -265,7 +266,7 @@
       transition: background 0.15s;
       font-family: 'Inter', sans-serif;
     }
-    .btn-search:hover { background: #79c0ff; }
+    .btn-search:hover { background: #56d364; }
 
     .btn-clear {
       background: transparent;
@@ -431,10 +432,12 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <a href="index.html" class="logo">🌙 Raw<span>Moon</span></a>
+  <a href="index.html" class="logo">
+  <img src="images/logo1.png" alt="RawMoon" style="height:28px; width:auto;"/> RawMoon
+  </a>
     <div class="nav-links">
-      <a href="papers.html" class="btn btn-ghost">📄 Papers</a>
-      <a href="upload.html" class="btn btn-ghost">⬆️ Upload</a>
+      <!--<a href="papers.html" class="btn btn-ghost">📄 Papers</a>
+      <a href="upload.html" class="btn btn-ghost">⬆️ Upload</a>-->
       <a href="login.html" class="btn btn-primary" id="authBtn">Sign In</a>
     </div>
   </nav>
@@ -544,7 +547,8 @@
   </div>
 
   <footer>
-    <p>🌙 RawMoon — Made for students of Nepal &nbsp;|&nbsp; <a href="upload.html">Contribute a Paper</a> &nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
+<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
+ 
   </footer>
 
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
