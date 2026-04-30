@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign In — RawMoon</title>
+  <title>Sign In | RawMoon</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" type="images/png" href="images/logo1.png"/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -278,9 +278,12 @@
           <input type="email" class="form-input" id="signinEmail" placeholder="you@example.com"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="signinPassword" placeholder="Your password"/>
-        </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+    <label class="form-label" style="margin-bottom:0;">Password</label>
+    <a href="#" onclick="forgotPassword()" style="font-size:0.8rem; color:var(--text-secondary); text-decoration:none;">Forgot password?</a>
+  </div>
+  <input type="password" class="form-input" id="signinPassword" placeholder="Your password"/>
+</div>
         <button class="btn-submit" id="signinBtn" onclick="signIn()">Sign In</button>
 
         <div class="divider">or</div>
@@ -438,6 +441,21 @@
       }
     }
 
+    async function forgotPassword() {
+  const email = document.getElementById('signinEmail').value.trim();
+  if (!email) {
+    showMessage('Please enter your email first then click forgot password.', 'error');
+    return;
+  }
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://rawmoon.io/login.html'
+  });
+  if (!error) {
+    showMessage('✅ Password reset link sent! Check your email inbox.', 'success');
+  } else {
+    showMessage(error.message, 'error');
+  }
+}
     // Sign In with Google
     async function signInWithGoogle() {
       const { error } = await supabase.auth.signInWithOAuth({

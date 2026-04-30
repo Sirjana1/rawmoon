@@ -407,15 +407,12 @@
   <footer>
 <p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
   </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.supabase = supabase.createClient(
       'https://nynfmzlvgqcxuxwgniht.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55bmZtemx2Z3FjeHV4d2duaWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjA4NjEsImV4cCI6MjA5MjkzNjg2MX0.uJXFSWBuhvNJV4Buoev05ZQ9kgNws_074Y3I-6GDqb0'
     );
-  </script>
-  <script>
 
     const PAGE_SIZE = 20;
     let currentPage = 0;
@@ -427,53 +424,40 @@
         currentPage = 0;
         document.getElementById('papersList').innerHTML = '';
       }
-
       const subject = document.getElementById('searchInput').value.trim();
       const university = document.getElementById('filterUniversity').value;
       const faculty = document.getElementById('filterFaculty').value;
       const year = document.getElementById('filterYear').value;
       const semester = document.getElementById('filterSemester').value;
-
       currentFilters = { subject, university, faculty, year, semester };
-
       const loading = document.getElementById('loading');
       const emptyState = document.getElementById('emptyState');
       const loadMoreWrap = document.getElementById('loadMoreWrap');
-
       loading.style.display = 'block';
       emptyState.style.display = 'none';
       loadMoreWrap.style.display = 'none';
-
       let query = supabase
         .from('papers')
         .select('*', { count: 'exact' })
         .eq('status', 'approved')
         .order('created_at', { ascending: false })
         .range(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE - 1);
-
       if (subject) query = query.ilike('subject', `%${subject}%`);
       if (university) query = query.eq('university', university);
       if (faculty) query = query.eq('faculty', faculty);
       if (year) query = query.eq('year', year);
       if (semester) query = query.eq('semester', semester);
-
       const { data, error, count } = await query;
-
       loading.style.display = 'none';
       totalCount = count || 0;
-
       if (error || !data || data.length === 0) {
         if (currentPage === 0) emptyState.style.display = 'block';
         document.getElementById('resultsCount').textContent = '0 papers found';
         return;
       }
-
       document.getElementById('resultsCount').textContent =
         `Showing ${Math.min((currentPage + 1) * PAGE_SIZE, totalCount)} of ${totalCount} paper${totalCount !== 1 ? 's' : ''}`;
-
       renderPapers(data);
-
-      // Show load more if there are more papers
       if ((currentPage + 1) * PAGE_SIZE < totalCount) {
         loadMoreWrap.style.display = 'block';
       }
@@ -496,7 +480,8 @@
             </div>
           </div>
           <div class="paper-actions">
-            <a href="${paper.file_url}" target="_blank" class="btn-download">⬇️ Download</a>
+            <a href="${paper.file_url}" target="_blank" class="btn-download">👁 View</a>
+            <a href="#" onclick="forceDownload(event, '${paper.file_url}', '${paper.subject}_${paper.university}')" class="btn-download" style="border-color:var(--accent-green); color:var(--accent-green);">⬇️ Download</a>
           </div>
         `;
         list.appendChild(card);
@@ -508,14 +493,11 @@
       const btn = document.getElementById('loadMoreBtn');
       btn.disabled = true;
       btn.textContent = 'Loading...';
-
-      // Restore filters
       document.getElementById('searchInput').value = currentFilters.subject || '';
       document.getElementById('filterUniversity').value = currentFilters.university || '';
       document.getElementById('filterFaculty').value = currentFilters.faculty || '';
       document.getElementById('filterYear').value = currentFilters.year || '';
       document.getElementById('filterSemester').value = currentFilters.semester || '';
-
       searchPapers(false).then(() => {
         btn.disabled = false;
         btn.textContent = 'Load More Papers';
@@ -538,28 +520,23 @@
         window.location.href = 'login.html';
         return;
       }
-
       const university = document.getElementById('filterUniversity').value;
       const faculty = document.getElementById('filterFaculty').value;
       const subject = document.getElementById('searchInput').value;
       const year = document.getElementById('filterYear').value;
       const semester = document.getElementById('filterSemester').value;
-
       if (!university && !subject) {
         alert('Please enter at least a university or subject to request.');
         return;
       }
-
       const { error } = await supabase.from('paper_requests').insert({
         university, faculty, subject, year, semester,
         requested_by: user.id
       });
-
       if (!error) alert('✅ Paper requested! We will try to add it soon. Thank you!');
       else alert('Something went wrong. Please try again.');
     }
 
-    // Update auth button
     async function updateAuthButton() {
       const { data: { user } } = await supabase.auth.getUser();
       const btn = document.getElementById('authBtn');
@@ -569,14 +546,30 @@
       }
     }
 
-    // Search on Enter key
+    async function forceDownload(e, url, filename) {
+      e.preventDefault();
+      try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      } catch (err) {
+        window.open(url, '_blank');
+      }
+    }
+
     document.getElementById('searchInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') searchPapers();
     });
 
-    // Load all papers on page load
     searchPapers();
     updateAuthButton();
+
   </script>
 
 </body>
