@@ -321,7 +321,7 @@
   <span style="color:#ffffff; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Raw</span><span style="color:#8b949e; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Moon</span>
 </a>
     <div class="nav-links">
-      <!-- <a href="upload.html" class="btn">⬆️ Upload</a> -->
+      <a href="upload.html" class="btn">⬆️ Upload</a>
       <a href="login.html" class="btn btn-primary" id="authBtn">Sign In</a>
     </div>
   </nav>
@@ -366,10 +366,10 @@
         <option value="3">3rd Year</option>
         <option value="4">4th Year</option>
       </select>
-      <!-- <select class="filter-select" id="filterSemester">
+      <select class="filter-select" id="filterSemester">
         <option value="">All Semesters</option>
         <option value="Fall">Fall</option>
-        <option value="Spring">Spring</option> -->
+        <option value="Spring">Spring</option>
       </select>
       <button class="btn-search" onclick="searchPapers()">Search</button>
       <button class="btn-clear" onclick="clearSearch()">Clear</button>
@@ -405,7 +405,8 @@
   </div>
 
   <footer>
-<p style="margin-top:8px;">© 2026 RawMoon.&nbsp;|&nbsp; <a href="indexx.html"> All rights reserved.</a></p>
+<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
+  </footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.supabase = supabase.createClient(
@@ -427,7 +428,7 @@
       const university = document.getElementById('filterUniversity').value;
       const faculty = document.getElementById('filterFaculty').value;
       const year = document.getElementById('filterYear').value;
-     // const semester = document.getElementById('filterSemester').value;
+      const semester = document.getElementById('filterSemester').value;
       currentFilters = { subject, university, faculty, year, semester };
       const loading = document.getElementById('loading');
       const emptyState = document.getElementById('emptyState');
@@ -445,7 +446,7 @@
       if (university) query = query.eq('university', university);
       if (faculty) query = query.eq('faculty', faculty);
       if (year) query = query.eq('year', year);
-     // if (semester) query = query.eq('semester', semester);
+      if (semester) query = query.eq('semester', semester);
       const { data, error, count } = await query;
       loading.style.display = 'none';
       totalCount = count || 0;
@@ -461,7 +462,7 @@
         loadMoreWrap.style.display = 'block';
       }
     }
-// <span class="tag semester">${paper.semester}</span>
+
     function renderPapers(papers) {
       const list = document.getElementById('papersList');
       papers.forEach(paper => {
@@ -474,6 +475,7 @@
             <div class="paper-meta">
               <span class="tag university">${paper.university}</span>
               <span class="tag year">Year ${paper.year}</span>
+              <span class="tag semester">${paper.semester}</span>
               <span class="tag">📅 ${date}</span>
             </div>
           </div>
@@ -495,7 +497,7 @@
       document.getElementById('filterUniversity').value = currentFilters.university || '';
       document.getElementById('filterFaculty').value = currentFilters.faculty || '';
       document.getElementById('filterYear').value = currentFilters.year || '';
-      //document.getElementById('filterSemester').value = currentFilters.semester || '';
+      document.getElementById('filterSemester').value = currentFilters.semester || '';
       searchPapers(false).then(() => {
         btn.disabled = false;
         btn.textContent = 'Load More Papers';
@@ -507,7 +509,7 @@
       document.getElementById('filterUniversity').value = '';
       document.getElementById('filterFaculty').value = '';
       document.getElementById('filterYear').value = '';
-     // document.getElementById('filterSemester').value = '';
+      document.getElementById('filterSemester').value = '';
       searchPapers();
     }
 
@@ -522,7 +524,7 @@
       const faculty = document.getElementById('filterFaculty').value;
       const subject = document.getElementById('searchInput').value;
       const year = document.getElementById('filterYear').value;
-      //const semester = document.getElementById('filterSemester').value;
+      const semester = document.getElementById('filterSemester').value;
       if (!university && !subject) {
         alert('Please enter at least a university or subject to request.');
         return;

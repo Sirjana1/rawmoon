@@ -399,35 +399,10 @@
     }
     footer a { color: var(--accent); text-decoration: none; }
 
-   @media (max-width: 600px) {
-  /* Navbar */
-  .navbar { padding: 10px 16px; }
-  .admin-badge { display: none; }
-  .nav-right { gap: 4px; }
-  .nav-right .btn {
-    padding: 5px 10px;
-    font-size: 0.75rem;
-  }
-  .logo img { height: 22px; }
-
-  /* Paper cards */
-  .paper-card-top { flex-direction: column; }
-  .paper-actions { width: 100%; }
-
-  /* Tabs */
-  .tab {
-    padding: 8px 10px;
-    font-size: 0.75rem;
-  }
-
-  /* Stats */
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  /* Footer */
-  footer { margin-top: 20px; }
-}
+    @media (max-width: 600px) {
+      .paper-card-top { flex-direction: column; }
+      .paper-actions { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -450,7 +425,7 @@
     <div class="icon">🔒</div>
     <h2>Access Denied</h2>
     <p>You don't have admin access. Please sign in with an admin account.</p>
-    <a href="admin.html" class="btn btn-primary" style="display:inline-flex; width:auto;">Sign In</a>
+    <a href="login.html" class="btn btn-primary" style="display:inline-flex; width:auto;">Sign In</a>
   </div>
 
   <!-- ADMIN SETUP (first time) -->
