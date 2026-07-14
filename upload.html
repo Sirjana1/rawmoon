@@ -375,11 +375,11 @@
 
   <!-- NAVBAR -->
   <nav class="navbar">
-     <a href="index.html" class="logo" style="display:flex; align-items:center; gap:8px;">
-  <img src="images/logo1.png" alt="RawMoon" style="height:28px; width:auto;"/>
-  <span style="color:#ffffff; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Raw</span><span style="color:#8b949e; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">Moon</span>
+ <a href="index.html" class="logo">
+  <img src="images/logo1.png" alt="RawMoon" style="height:28px; width:auto;"/> RawMoon
 </a>
   <a href="index.html" style="color:var(--text-secondary); font-size:0.875rem; text-decoration:none;">← Back to Home</a>
+
     <div class="nav-links">
       <a href="index.html" class="btn">← Home</a>
       <a href="login.html" class="btn btn-primary" id="authBtn" style="display:none;">Sign In</a>
@@ -475,7 +475,7 @@
                 <option value="4">4th Year</option>
               </select>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
               <label class="form-label">Semester <span class="required">*</span></label>
               <select class="form-select" id="paperSemester">
                 <option value="">Select Semester</option>
@@ -484,7 +484,7 @@
               </select>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- FILE UPLOAD -->
         <div class="form-section">
@@ -531,8 +531,7 @@
   </div>
 
   <footer>
-<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="admin.html">Admin</a></p>
-  </footer>
+<p style="margin-top:8px;">© 2026 RawMoon. All rights reserved.&nbsp;|&nbsp; <a href="indexx.html"> All rights reserved.</a></p>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -629,10 +628,10 @@
       const faculty = document.getElementById('paperFaculty').value;
       const subject = document.getElementById('paperSubject').value.trim();
       const year = document.getElementById('paperYear').value;
-      const semester = document.getElementById('paperSemester').value;
+      //const semester = document.getElementById('paperSemester').value;
 
       // Validate
-      if (!name || !email || !university || !faculty || !subject || !year || !semester) {
+      if (!name || !email || !university || !faculty || !subject || !year ) {    //|| !semester 
         showMessage('Please fill in all required fields.', 'error');
         return;
       }
@@ -686,7 +685,7 @@
           faculty,
           subject,
           year,
-          semester,
+          //semester,
           file_url: publicUrl,
           uploaded_by: currentUser.id,
           uploader_name: name,
@@ -707,7 +706,7 @@
           document.getElementById('paperFaculty').value = '';
           document.getElementById('paperSubject').value = '';
           document.getElementById('paperYear').value = '';
-          document.getElementById('paperSemester').value = '';
+          //document.getElementById('paperSemester').value = '';
           document.getElementById('fileInput').value = '';
           document.getElementById('fileSelected').classList.remove('show');
           document.getElementById('progressWrap').classList.remove('show');
